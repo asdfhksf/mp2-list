@@ -40,7 +40,7 @@ public:
   List Merge(Node* node, const List& list2); // создать список3, добавив список2 в текущий список после указателя node  
   List Merge(const List& list2); // создать список3, добавив в конец текущего списка список2
 
-  friend ostream& operator<<(ostream& os, const List& l);
+  //friend ostream& operator<<(ostream& os, const List& l);
   bool operator==(const List& list2) const; // списки равны, если элементы в них идут в одинаковом порядке
 };
 

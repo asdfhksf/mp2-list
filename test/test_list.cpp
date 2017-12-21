@@ -59,11 +59,6 @@ TEST_F(EmptyList, can_assign_two_empty_lists)
   ASSERT_NO_THROW(l = l2); 
 }
 
-TEST_F(EmptyList, can_assign_empty_list_to_itself)
-{
-  ASSERT_NO_THROW(l = l); 
-}
-
 TEST_F(EmptyList, assign_two_empty_lists_is_correct)
 {
   List l2;
@@ -204,21 +199,6 @@ TEST_F(ThreeNodesList, copy_of_not_empty_list_is_correct)
   EXPECT_EQ(2, l2.GetHead()->next->data);
   EXPECT_EQ(3, l2.GetHead()->next->next->data);
   EXPECT_EQ(NULL, l2.GetHead()->next->next->next);
-}
-
-TEST_F(ThreeNodesList, copied_list_has_its_own_memory)
-{
-  List l2(l);
-  EXPECT_NE(l.GetHead(), l2.GetHead());
-  EXPECT_NE(l.GetHead()->next, l2.GetHead()->next);
-  EXPECT_NE(l.GetHead()->next->next, l2.GetHead()->next->next);
-}
-
-TEST_F(ThreeNodesList, not_empty_list_is_correct_after_assigning_to_itself)
-{
-  List l2(l);
-  l = l;
-  EXPECT_EQ(l2, l);
 }
 
 TEST_F(ThreeNodesList, size_of_not_empty_list_copy_is_correct)
@@ -365,28 +345,12 @@ TEST_F(ThreeNodesList, not_empty_list_is_correct_after_inverse)
   EXPECT_EQ(NULL, l.GetHead()->next->next->next);
 }
 
-TEST_F(ThreeNodesList, can_assign_not_empty_list_to_itself)
-{
-  ASSERT_NO_THROW(l = l); 
-}
-
-
 TEST_F(ThreeNodesList, can_assign_two_not_empty_lists)
 {
   List l2;
   l2.InsertToTail(22);
   l2.InsertToTail(33);
   ASSERT_NO_THROW(l = l2); 
-}
-
-TEST_F(ThreeNodesList, list_after_assign_has_its_own_memory)
-{
-  List l2;
-  l2.InsertToTail(22);
-  l2.InsertToTail(33);
-  l = l2;
-  EXPECT_NE(l.GetHead(), l2.GetHead());
-  EXPECT_NE(l.GetHead()->next, l2.GetHead()->next);
 }
 
 TEST_F(ThreeNodesList, can_assign_two_not_empty_lists_of_eq_size)
