@@ -100,22 +100,14 @@ void List::InsertToTail(const DataType& d)
 
 void List::InsertAfter(Node* node, const DataType& d)
 {
-	Node *tmp1 = head, *tmp2;
+	Node *tmp1 = node, *tmp2;
 
 	if (node != NULL)
 	{
-		while (((tmp1 != NULL) && (tmp1->next != NULL)) && (tmp1 != node))
-		{
-			tmp1 = tmp1->next;
-		}
-
-		if ((tmp1 != NULL) && (tmp1->next != NULL))
-		{
-			tmp2 = tmp1->next;
-			tmp1->next = new Node;
-			tmp1->next->data = d;
-			tmp1->next->next = tmp2;
-		}
+		tmp2 = tmp1->next;
+		tmp1->next = new Node;
+		tmp1->next->data = d;
+		tmp1->next->next = tmp2;
 	}
 	else
 	{
@@ -126,24 +118,28 @@ void List::InsertAfter(Node* node, const DataType& d)
 
 void List::Delete(const DataType& d)
 {
-	Node *tmp1 = head, *tmp2;
+	Node *tmp1 = head, *tmp2 = NULL;
 
-	if ((head != NULL) && (head->data != d))
+	if (head != NULL)
 	{
-		while (((tmp1 != NULL) && (tmp1->next != NULL)) && (tmp1->data != d))
+		while ((tmp1 != NULL)  && (tmp1->data != d))
 		{
 			tmp2 = tmp1;
 			tmp1 = tmp1->next;
 		}
 
-		if ((tmp1 != NULL) && (tmp1->next != NULL))
+		if (tmp1 != NULL)
 		{
-			tmp2->next = tmp1->next;
+			if (tmp2 != NULL)
+				tmp2->next = tmp1->next;
+			if (tmp1 == head)
+				head = tmp1->next;
 			delete tmp1;
 		}
 	}
 	else
 		head = NULL;
+
 }
 
 Node* List::Search(const DataType& d)
@@ -189,57 +185,79 @@ Node* List::GetHead()
 
 void List::Inverse()
 {
-	//int i = 0, s = GetSize();
-	//Node *tmp = head, **n = new Node *[s];
+	if (GetSize() > 2)
+	{
+		Node *tmp1 = head, *tmp2 = head->next, *tmp3;
 
-	//while (tmp != NULL)
-	//{
-	//	n[i] = tmp; n[i]->next = NULL;
-	//	tmp = tmp->next; i++;
-	//}
+		tmp1->next = NULL;
 
-	//tmp = head;
-	//while (tmp->next != NULL)
-	//{
-	//	tmp = tmp->next;
-	//}
-
-	//head = tmp;
-	//for (int j = s - 1; j >= 0; j--)
-	//{
-	//	tmp->next = n[j];
-	//}
-
-	//head->next = NULL;
+		while (tmp2 != NULL)
+		{
+			tmp3 = tmp2->next;
+			tmp2->next = tmp1;
+			tmp1 = tmp2;
+			tmp2 = tmp3;
+		}
+		head = tmp1;
+	}
+	else
+		if (GetSize() == 2)
+		{
+			Node *tmp = head->next;
+			tmp->next = head;
+			head->next = NULL;
+		}			
 }
 
 List List::Merge(Node* node, const List& list2)
 {
-	//List l1(*this), l2(list2), l3;
-	//Node *tmp1 = l1.head, *tmp2 = l2.head;
+	if (node != NULL)
+	{
+		List l3;
+		Node *tmp1 = head, *tmp2 = list2.head;
 
-	//while (tmp2->next != NULL)
-	//	tmp2 = tmp2->next;
+		while ((tmp1 != NULL) && (tmp1 != node))
+		{
+			l3.InsertToTail(tmp1->data);
+			tmp1 = tmp1->next;
+		}
 
-	//while (((tmp1 != NULL) && (tmp1->next != NULL)) && (tmp1 != node))
-	//{
-	//	tmp1 = tmp1->next;
-	//}
+		while (tmp2 != NULL)
+		{
+			l3.InsertToTail(tmp2->data);
+			tmp2 = tmp2->next;
+		}
 
-	//if ((tmp1 != NULL) && (tmp1->next != NULL))
-	//{
-	//	tmp2->next = tmp1->next;
-	//	tmp1->next = l2.head;
-	//}
+		while (tmp1 != NULL)
+		{
+			l3.InsertToTail(tmp1->data);
+			tmp1 = tmp1->next;
+		}
 
-	////l3 = *this;
-	////*this = l1;
-	return *this;
+		return l3;
+	}
+	else
+		return *this;
 }
 
 List List::Merge(const List& list2)
 {
-	return *this;
+	List l3;
+	Node *tmp1 = head, *tmp2 = list2.head;
+
+	while (tmp1 != NULL)
+	{
+		l3.InsertToTail(tmp1->data);
+		tmp1 = tmp1->next;
+	}
+
+	while (tmp2 != NULL)
+	{
+		l3.InsertToTail(tmp2->data);
+		tmp2 = tmp2->next;
+	}
+
+	return l3;
 }
 
 bool List::operator==(const List& list2) const
@@ -283,4 +301,18 @@ bool List::operator==(const List& list2) const
 	}
 	else
 		return false;
+}
+
+ostream& operator<<(ostream& os, const List& l)
+{
+	Node *tmp = l.head;
+
+	while (tmp != NULL)
+	{
+		os << "|" << tmp->data << "|" << tmp << "|" << "--->";
+		tmp = tmp->next;
+	}
+	os << " NULL";
+
+	return os;
 }
