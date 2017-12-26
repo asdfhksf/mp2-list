@@ -55,24 +55,23 @@ List& List::operator=(const List& list2)
 		Clean();
 
 		head = NULL;
-		Node *tmp = list2.head, *tmp1 = head;
+		Node *tmp2 = list2.head, *tmp1 = head;
 
-		while (tmp != NULL)
+		if (tmp2 != NULL)
 		{
-			if (tmp1 != NULL)
-			{
-				InsertAfter(tmp1, tmp->data);
-				tmp1 = tmp1->next;
-			}
-			else
-			{
-				tmp1 = new Node;
-				tmp1->next = NULL;
-				tmp1->data = tmp->data;
-				head = tmp1;
-			}
-			tmp = tmp->next;
+			InsertToHead(tmp2->data);
+			tmp1 = head;
+			tmp2 = tmp2->next;
 		}
+
+		while (tmp2 != NULL)
+		{
+			InsertAfter(tmp1, tmp2->data);
+			tmp1 = tmp1->next;
+			tmp2 = tmp2->next;
+		}
+
+		return *this;
 	}
 	return *this;
 }
@@ -89,7 +88,6 @@ void List::InsertToHead(const DataType& d)
 	tmp->next = head;
 	tmp->data = d;
 	head = tmp;
-
 }
 
 void List::InsertToTail(const DataType& d)
@@ -240,23 +238,33 @@ List List::Merge(Node* node, const List& list2)
 	if (node != NULL)
 	{
 		List l3;
-		Node *tmp1 = head, *tmp2 = list2.head;
+		Node *tmp1 = head, *tmp2 = list2.head, *tmp3;
+
+		if (tmp1 != NULL)
+		{
+			l3.InsertToHead(tmp1->data);
+			tmp3 = l3.head;
+			tmp1 = tmp1->next;
+		}
 
 		while ((tmp1 != NULL) && (node->next != tmp1))
 		{
-			l3.InsertToTail(tmp1->data);
+			l3.InsertAfter(tmp3, tmp1->data);
+			tmp3 = tmp3->next;
 			tmp1 = tmp1->next;
 		}
 
 		while (tmp2 != NULL)
 		{
-			l3.InsertToTail(tmp2->data);
+			l3.InsertAfter(tmp3, tmp2->data);
+			tmp3 = tmp3->next;
 			tmp2 = tmp2->next;
 		}
 
 		while (tmp1 != NULL)
 		{
-			l3.InsertToTail(tmp1->data);
+			l3.InsertAfter(tmp3, tmp1->data);
+			tmp3 = tmp3->next;
 			tmp1 = tmp1->next;
 		}
 
@@ -269,21 +277,35 @@ List List::Merge(Node* node, const List& list2)
 List List::Merge(const List& list2)
 {
 	List l3;
-	Node *tmp1 = head, *tmp2 = list2.head;
+	Node *tmp1 = head, *tmp2 = list2.head, *tmp3;
 
-	while (tmp1 != NULL)
+	if (tmp1 != NULL)
 	{
-		l3.InsertToTail(tmp1->data);
-		tmp1 = tmp1->next;
+		if (tmp1 != NULL)
+		{
+			l3.InsertToHead(tmp1->data);
+			tmp3 = l3.head;
+			tmp1 = tmp1->next;
+		}
+
+		while (tmp1 != NULL)
+		{
+			l3.InsertAfter(tmp3, tmp1->data);
+			tmp3 = tmp3->next;
+			tmp1 = tmp1->next;
+		}
+
+		while (tmp2 != NULL)
+		{
+			l3.InsertAfter(tmp3, tmp2->data);
+			tmp3 = tmp3->next;
+			tmp2 = tmp2->next;
+		}
+
+		return l3;
 	}
 
-	while (tmp2 != NULL)
-	{
-		l3.InsertToTail(tmp2->data);
-		tmp2 = tmp2->next;
-	}
-
-	return l3;
+	return list2;
 }
 
 bool List::operator==(const List& list2) const
