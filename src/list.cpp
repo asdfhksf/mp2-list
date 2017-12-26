@@ -27,12 +27,23 @@ List::List()
 
 List::List(const List& list2)
 {
-	Node *tmp = list2.head;
 	head = NULL;
+	Node *tmp = list2.head, *tmp1 = head;
 
 	while (tmp != NULL)
 	{
-		InsertToTail(tmp->data);
+		if (tmp1 != NULL)
+		{
+			InsertAfter(tmp1, tmp->data);
+			tmp1 = tmp1->next;
+		}
+		else
+		{
+			tmp1 = new Node;
+			tmp1->next = NULL;
+			tmp1->data = tmp->data;
+			head = tmp1;
+		}
 		tmp = tmp->next;
 	}
 }
@@ -41,12 +52,25 @@ List& List::operator=(const List& list2)
 {
 	if (this != &list2)
 	{
-		Node *tmp = list2.head;
+		Clean();
+
 		head = NULL;
+		Node *tmp = list2.head, *tmp1 = head;
 
 		while (tmp != NULL)
 		{
-			InsertToTail(tmp->data);
+			if (tmp1 != NULL)
+			{
+				InsertAfter(tmp1, tmp->data);
+				tmp1 = tmp1->next;
+			}
+			else
+			{
+				tmp1 = new Node;
+				tmp1->next = NULL;
+				tmp1->data = tmp->data;
+				head = tmp1;
+			}
 			tmp = tmp->next;
 		}
 	}
@@ -55,13 +79,7 @@ List& List::operator=(const List& list2)
 
 List::~List()
 {
-	while (head != NULL)
-	{
-		Node *tmp = head->next;
-		delete head;
-		head = tmp;
-	}
-	delete head;
+	Clean();
 }
 
 void List::InsertToHead(const DataType& d)
@@ -78,13 +96,15 @@ void List::InsertToTail(const DataType& d)
 {
 	Node *tmp = head;
 
-	while ((tmp != NULL) && (tmp->next != NULL))
-	{
-		tmp = tmp->next;
-	}
-
 	if (tmp != NULL)
 	{
+
+		while (tmp->next != NULL)
+		{
+			tmp = tmp->next;
+		}
+
+
 		tmp->next = new Node;
 		tmp->next->next = NULL;
 		tmp->next->data = d;
@@ -161,7 +181,13 @@ Node* List::Search(const DataType& d)
 
 void List::Clean()
 {
-	this->~List();
+	while (head != NULL)
+	{
+		Node *tmp = head->next;
+		delete head;
+		head = tmp;
+	}
+	delete head;
 }
 
 int List::GetSize()
@@ -216,7 +242,7 @@ List List::Merge(Node* node, const List& list2)
 		List l3;
 		Node *tmp1 = head, *tmp2 = list2.head;
 
-		while ((tmp1 != NULL) && (tmp1 != node))
+		while ((tmp1 != NULL) && (node->next != tmp1))
 		{
 			l3.InsertToTail(tmp1->data);
 			tmp1 = tmp1->next;
@@ -296,8 +322,14 @@ bool List::operator==(const List& list2) const
 		for (int j = 0; j < s1; j++)
 			if (l1[j] == l2[j])
 				i++;
+
+		delete[] l1;
+		delete[] l2;
+
 		if (i == s1)
 			return true;
+		else
+			return false;
 	}
 	else
 		return false;
